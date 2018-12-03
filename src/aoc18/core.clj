@@ -11,15 +11,22 @@
   ([]
    (get-split (get-res)))
   ([s]
-   (s/split s #",|\n")))
+   (s/split s #"\n")))
+
+(defn atoi
+  [s]
+  (Integer. (str s)))
+
+(defn bint [s]
+  (if s 1 0))
 
 (defn get-num
   ([]
    (get-num (get-res)))
   ([s]
    (->> s
-        (re-seq #"\d+")
-        (mapv #(Integer. %)))))
+        (re-seq #"[+-]?\d+")
+        (mapv atoi))))
 
 (defn get-line-num
   ([]
@@ -27,6 +34,6 @@
   ([s]
    (->> (s/split s #"\n")
         (mapv (fn [l]
-                (->> (re-seq #"\d+" l)
-                     (mapv #(Integer. %))))))))
+                (->> (re-seq #"[+-]?\d+" l)
+                     (mapv atoi)))))))
 
