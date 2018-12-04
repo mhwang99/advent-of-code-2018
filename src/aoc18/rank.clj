@@ -51,7 +51,7 @@
   ([]
    (time-spliced-score default-lbooard))
   ([lboard]
-   (time-spliced-score lboard 4))
+   (time-spliced-score lboard 1))
   ([lboard hours]
    (let [time-gap (* 60 60 hours 1000)
          users (get-users lboard)
@@ -80,7 +80,7 @@
 
 (defn print-times
   ([]
-   (show-times default-lbooard))
+   (print-times default-lbooard))
   ([lboard]
    (doseq [[timestamp user qid] (convert-info lboard)]
      (println (format "%s , %4s , %s" (Date. timestamp) qid user)))))
