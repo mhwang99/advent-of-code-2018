@@ -11,7 +11,15 @@
   ([]
    (get-split (get-res)))
   ([s]
-   (s/split s #"\n")))
+   (s/split s #",|\n")))
+
+(defn get-line-split
+  ([delim]
+   (get-line-split (get-res) delim))
+  ([s delim]
+   (->> (s/split s #"\n")
+        (mapv (fn [l]
+                (s/split l (re-pattern delim)))))))
 
 (defn atoi
   [s]
@@ -24,8 +32,10 @@
   ([]
    (get-num (get-res)))
   ([s]
+   (get-num s false))
+  ([s minus?]
    (->> s
-        (re-seq #"[+-]?\d+")
+        (re-seq (if minus? #"[+-]?\d+" #"\d+"))
         (mapv atoi))))
 
 (defn get-line-num

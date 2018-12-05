@@ -17,7 +17,7 @@
                     (rest l)
                     ll))))))
 
-(def in (get-num))
+(def in (get-num (get-res) true))
 (q1 in)
 (q2 in)
 
