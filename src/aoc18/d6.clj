@@ -22,19 +22,17 @@
        (some (fn [[x y]] (and (> y iy) (<= (dif x ix) (dif y iy)))) l)))
 
 (defn get-grid-count
-  [l [ix iy] fn-check]
+  [[ix iy] fn-check]
   (loop [s #{}
          ps #{[ix iy]}
          ret 0
          len 0]
     (let [[ps n s] (reduce (fn [[ps n s] [ix iy]]
                              (if (and (not (s [ix iy]))
-                                      (fn-check l [ix iy] len))
+                                      (fn-check [ix iy] len))
                                [(conj ps
-                                      [(inc ix) iy]
-                                      [(dec ix) iy]
-                                      [ix (inc iy)]
-                                      [ix (dec iy)])
+                                      [(inc ix) iy] [ix (inc iy)]
+                                      [(dec ix) iy] [ix (dec iy)])
                                 (inc n)
                                 (conj s [ix iy])]
                                [ps n (conj s [ix iy])]))
@@ -47,19 +45,16 @@
   (->> (range (count ll))
        (mapv (fn [i]
                (let [[l p] (get-nth ll i)]
-                 (if-not (limited? l p)
-                   0
-                   (get-grid-count l p
-                                   (fn [l p len]
+                 (if-not (limited? l p) 0
+                   (get-grid-count p (fn [p len]
                                      (not-any? #(<= (dif % p) len) l)))))))
        (apply max)))
 
 (defn q2 [ll mx]
   (let [ax (->> (mapv first ll) (apply +) (#(/ % (count ll))) int)
         ay (->> (mapv last ll) (apply +) (#(/ % (count ll))) int)]
-    (get-grid-count ll [ax ay]
-                    (fn [l p _]
-                      (< (apply + (mapv #(dif % p) l)) mx)))))
+    (get-grid-count [ax ay] (fn [p _]
+                              (< (apply + (mapv #(dif % p) ll)) mx)))))
 
 (def in (get-line-num))
 (q1 in)
