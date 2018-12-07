@@ -10,15 +10,12 @@
       (apply str done)
       (let [c (char (apply min (mapv int queue)))
             done (conj done c)
-            queue (disj queue c)]
-        (if-not (get parent-map c)
-          (recur done queue)
-          (let [new-queue (reduce (fn [ps p]
-                                    (if (and (every? (set done) (get client-map p))
-                                             (not ((set done) p)))
-                                      (conj ps p) ps))
-                                  [] (get parent-map c))]
-            (recur done (apply conj queue new-queue))))))))
+            queue (disj queue c)
+            new-queue (reduce (fn [ps p]
+                                (if (every? (set done) (get client-map p))
+                                  (conj ps p) ps))
+                              [] (get parent-map c))]
+          (recur done (apply conj queue new-queue))))))
 
 (defn q2
   [[client-map parent-map] worker-cnt time-take]
@@ -28,15 +25,14 @@
          queue (set (remove (set (keys client-map)) (keys parent-map)))]
     (if (and (empty? queue)
              (empty? working))
-      [(apply str done) (dec n)]
+      (dec n)
       (let [work-done (keys (filter (fn [[_ tm]] (= tm 0)) working))
             working (apply dissoc working work-done)
             done (if (seq work-done) (apply conj done work-done) done)
             queue (if (empty? work-done) queue
                     (->> (mapcat #(get parent-map %) work-done)
                          (reduce (fn [ps p]
-                                   (if (and (every? (set done) (get client-map p))
-                                            (not ((set done) p)))
+                                   (if (every? (set done) (get client-map p))
                                      (conj ps p) ps)) [])
                          (apply conj queue)))
             working-new (take (- worker-cnt (count working)) (sort queue))
