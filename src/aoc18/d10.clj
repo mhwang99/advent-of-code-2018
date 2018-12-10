@@ -2,8 +2,6 @@
   (:require [clojure.string :as s]
             [aoc18.core :as aoc :refer :all]))
 
-(def in (get-line-num))
-
 (defn print-board [ps]
   (let [ys (mapv second ps)
         miny (apply min ys)
@@ -17,15 +15,13 @@
                               (assoc-in board [(- y miny) (- x minx)] \#))
                             (vec (repeat (- maxy miny -1)
                                 (vec (repeat (- maxx minx -1) \space)))) ps))
-            board2 (reduce (fn [board [x y]]
-                             (assoc-in board [(- x minx) (- y miny)] \#))
-                           (vec (repeat (- maxx minx -1)
-                                (vec (repeat (- maxy miny -1) \space)))) ps)]
-        (when (some (fn [l]  (every? #(= % \#) l)) board2)
+            check (reduce (fn [m [x y]]
+                            (assoc m x (conj (get m x #{}) y)))
+                          {} ps)]
+        (when (some (fn [[_ xs]] (= 1 (count xs))) check)
           (doseq [xs @board]
             (println (apply str xs)))
           true)))))
-
 
 (defn q0 [l]
   (let [[ps vs] (reduce (fn [[ps vs] [a b c d]]
@@ -42,4 +38,4 @@
                        ps vs))
           n)))))
 
-(q0 in)
+#_(q0 (get-line-num))
