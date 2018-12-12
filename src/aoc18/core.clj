@@ -11,7 +11,9 @@
   ([]
    (get-split (get-res)))
   ([s]
-   (s/split s #",|\n")))
+   (get-split s ",|\\n"))
+  ([s delim]
+   (s/split s (re-pattern delim))))
 
 (defn get-line-split
   ([delim]
